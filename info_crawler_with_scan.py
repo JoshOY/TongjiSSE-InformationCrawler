@@ -21,7 +21,7 @@ class MyOpener(urllib.FancyURLopener):
 def get_exist_id_list():
     exist_id = []
 
-    db = MySQLdb.connect("localhost", "root", "jssq245q2t", "sseinfo", charset="utf8")
+    db = MySQLdb.connect("localhost", "root", "*********", "sseinfo", charset="utf8")
     cursor = db.cursor()
     cursor.execute("select id from info")
     records = cursor.fetchall()
@@ -61,7 +61,7 @@ def scan_content(keywords):
 
     info_div_list = news_soup.find_all('div', class_="news_title")
 
-    db = MySQLdb.connect("localhost", "root", "jssq245q2t", "sseinfo", charset="utf8")
+    db = MySQLdb.connect("localhost", "root", "*******", "sseinfo", charset="utf8")
     cursor = db.cursor()
 
     for each_div in info_div_list:
