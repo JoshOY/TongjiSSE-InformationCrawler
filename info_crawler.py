@@ -15,7 +15,7 @@ header["User-Agent"] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (
 def main():
     exist_id = []
 
-    db = MySQLdb.connect("localhost", "root", "jssq245q2t", "sseinfo", charset="utf8")
+    db = MySQLdb.connect("localhost", "root", "**********", "sseinfo", charset="utf8")
     cursor = db.cursor()
     cursor.execute("select id from info")
     records = cursor.fetchall()
@@ -59,7 +59,7 @@ def main():
             news_file.write(content.text + '\n')
 
         #Connect to database
-        db = MySQLdb.connect("localhost", "root", "jssq245q2t", "sseinfo", charset="utf8")
+        db = MySQLdb.connect("localhost", "root", "**********", "sseinfo", charset="utf8")
         cursor = db.cursor()
         sql = "INSERT INTO info(id, title, content, post_time) VALUES (" \
               + item.a['href'][10:] + ", '" \
