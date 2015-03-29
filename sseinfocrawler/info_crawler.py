@@ -2,7 +2,8 @@
 
 __author__ = 'JoshOY'
 
-import urllib, urllib2
+import urllib
+import urllib2
 from bs4 import BeautifulSoup
 import sys
 import json
@@ -12,6 +13,7 @@ sys.setdefaultencoding('utf-8')
 
 sseInfoUrl = ''
 noticeUrlType = ''
+downloadUrlType = ''
 header = {}
 
 
@@ -22,6 +24,7 @@ with open('constants.json', 'r') as const_file:
     try:
         sseInfoUrl = data[u'sseInfoUrl']
         noticeUrlType = data[u'noticeUrlType']
+        downloadUrlType = data[u'downloadUrlType']
         header = data[u'header']
     except Exception as err:
         print 'Exception: Cannot get sseInfoUrl or noticeUrlType.'
@@ -33,13 +36,15 @@ class SSEInfoOpener(urllib.FancyURLopener):
     version = header[u'User-Agent']
 
 
-"""
-Function search_info_ids
-@args
-    keywords: 搜索关键词，默认为空字符串
-    page_range: 搜索页数限制，默认1页
-"""
 def search_info_ids(keywords=u'', page_range=1):
+    """
+    search_info_ids -> list
+    @:argument
+        keywords: 搜索关键词，默认为空字符串
+        page_range: 搜索页数限制，默认1页
+    @:return
+        检索到通知的url id列表（字符串格式）
+    """
     ids = []
     opener = SSEInfoOpener()
 
@@ -100,5 +105,48 @@ def search_info_ids(keywords=u'', page_range=1):
     return ids
 
 
+def get_info_detail(url_id):
+    """
+    get_info_detail -> dict
+    @:argument
+        url_id: 通知的id
+    @:return
+        一个dict，其中的键值为：
+            "id": 通知id,
+            "title": 通知标题,
+            "content": 正文内容,
+            "date": 发布时间
+            "attachment": 一个list，里面为二元组：(附件名, 附件id)，若不含附件则为空list
+    """
+    info_url = noticeUrlType + str(url_id)
+    detail = {}
+
+    page = urllib2.urlopen(info_url).read()
+    soup = BeautifulSoup(page)
+
+    detail['id'] = str(url_id)
+    detail['title'] = soup.find('span', class_='title').text.encode(encoding="utf-8")
+    detail['date'] = soup.find('span', class_='date').text.encode(encoding="utf-8")
+    detail['content'] = soup.find('div', class_='content').text.encode(encoding="utf-8")
+    detail['attachment'] = []
+
+    attachment_list = soup.find('div', class_='attachment').find_all('li')
+
+    if not attachment_list:
+        return detail
+
+    for li in attachment_list:
+        attachment_id = li.a['href'][20:]
+        attachment_name = li.a.text
+        detail['attachment'].append((attachment_name.encode(encoding="utf-8"), attachment_id.encode(encoding="utf-8")))
+
+    return detail
+
+
 if __name__ == '__main__':
-    print search_info_ids()
+    d = get_info_detail('1003635')
+    print d['id']
+    print d['title']
+    print d['date']
+    print d['content']
+    print str(d['attachment'])
