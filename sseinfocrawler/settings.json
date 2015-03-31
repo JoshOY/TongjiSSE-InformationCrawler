@@ -1,0 +1,7 @@
+{
+    "smtpHost": "smtp.163.com",
+    "fromMail": "**@163.com",
+    "toMail": ["**@**.com"],
+    "senderUsername": "**@163.com",
+    "senderPassword": "****"
+}

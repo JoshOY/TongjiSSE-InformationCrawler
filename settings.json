@@ -1,7 +1,0 @@
-{
-
-    "smtpHost": "smtp.**.com",
-    "fromMail": "**@**.com",
-    "toMail": "**@**.com",
-    "senderPassword": "******"
-}
